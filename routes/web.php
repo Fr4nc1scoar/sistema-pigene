@@ -17,8 +17,13 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // RUTA TEMPORAL: Reseteo de Base de Datos (Ya que no sale la terminal)
 Route::get('/magic-seed', function () {
-    \Illuminate\Support\Facades\Artisan::call('migrate:fresh --seed --force');
-    return "¡Listo! Base de datos reseteada con 11 empleados nuevos y usuario admin.";
+    set_time_limit(300); // Aumentar tiempo a 5 minutos para evitar timeouts
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh --seed --force');
+        return "¡Listo! Base de datos reseteada con 11 empleados nuevos y usuario admin.";
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
 });
 
 // Rutas Protegidas
