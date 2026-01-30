@@ -81,4 +81,5 @@ class EmployeeFactory extends Factory
                 'employee_id' => $employee->id
             ]);
         });
+    }
 }
