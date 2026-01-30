@@ -50,10 +50,35 @@ class EmployeeFactory extends Factory
             'position_id' => $this->faker->randomElement($positions),
             'salary_scale_id' => $this->faker->randomElement($scales),
             'institution_entry_date' => $this->faker->dateTimeBetween('-10 years', 'now'),
-            'public_admin_entry_date' => $this->faker->dateTimeBetween('-20 years', '-10 years'),
-            'bank_name' => $this->faker->randomElement(['Banco de Venezuela', 'Banco Mercantil', 'Banesco', 'Banco Digital']),
-            'account_type' => 'Corriente',
-            'account_number' => $this->faker->numerify('0102################'), // Simula formato
+            'years_prior_service' => $this->faker->numberBetween(0, 15),
+            
+            // Campos de sueldo (base simulada)
+            'salary_1' => $this->faker->randomFloat(2, 100, 3000),
+            'salary_2' => 0,
+            'salary_3' => 0,
+            'salary_4' => 0,
+            'salary_5' => 0,
+            'salary_6' => 0,
+            
+            'health_condition' => $this->faker->optional(0.3)->sentence(), // 30% prob de tener condición
+            'medical_observations' => $this->faker->optional(0.3)->text(50),
         ];
     }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (\App\Models\Employee $employee) {
+            // Crear 1 cuenta bancaria
+            $employee->bankAccounts()->create([
+                'bank_name' => $this->faker->randomElement(['Banco de Venezuela', 'Banco Mercantil', 'Banesco']),
+                'account_number' => $this->faker->numerify('0102############'),
+                'account_type' => 'Corriente',
+                'is_active' => true
+            ]);
+
+            // Crear 0-3 dependientes
+            \App\Models\Dependent::factory(rand(0, 3))->create([
+                'employee_id' => $employee->id
+            ]);
+        });
 }
