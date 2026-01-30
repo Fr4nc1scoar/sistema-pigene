@@ -3,11 +3,17 @@
 use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('dashboard');
-})->name('dashboard');
+// Rutas de Autenticación (Públicas)
+Route::get('/login', [App\Http\Controllers\LoginController::class, 'index'])->name('login');
+Route::post('/login', [App\Http\Controllers\LoginController::class, 'store'])->name('login.store');
+Route::post('/logout', [App\Http\Controllers\LoginController::class, 'logout'])->name('logout');
 
+// Rutas Protegidas
 Route::middleware(['auth'])->group(function () {
+    Route::get('/', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
     Route::resource('employees', EmployeeController::class);
     
     Route::get('/social-welfare', [App\Http\Controllers\SocialWelfareController::class, 'index'])->name('social-welfare.index');
