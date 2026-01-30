@@ -51,6 +51,11 @@ class EmployeeFactory extends Factory
             'salary_scale_id' => $this->faker->randomElement($scales),
             'institution_entry_date' => $this->faker->dateTimeBetween('-10 years', 'now'),
             'years_prior_service' => $this->faker->numberBetween(0, 15),
+
+            // Campos requeridos por la tabla (Legacy/Original)
+            'bank_name' => $this->faker->randomElement(['Banco de Venezuela', 'Banco Mercantil', 'Banesco']),
+            'account_type' => 'Corriente',
+            'account_number' => $this->faker->numerify('0102############'),
             
             // Campos de sueldo (base simulada)
             'salary_1' => $this->faker->randomFloat(2, 100, 3000),
